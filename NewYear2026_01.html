@@ -1,0 +1,103 @@
+<style>
+/* ======= BALLOON CONTAINER ======= */
+.balloon-container {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  overflow: hidden;
+  margin-top: 40px;
+}
+
+/* ======= BALLOON SHAPES ======= */
+.balloon {
+  position: absolute;
+  bottom: -180px;
+  width: 70px;
+  height: 95px;
+  border-radius: 50% 50% 45% 45%;
+  animation: floatUp 10s linear infinite;
+  opacity: 0.95;
+}
+
+.balloon::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  width: 18px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-900px) translateX(20px); }
+}
+
+/* Balloon colors */
+.b1 { background: radial-gradient(circle at 30% 30%, #ff8ab9, #ff006a); }
+.b2 { background: radial-gradient(circle at 30% 30%, #7efcff, #00a6d6); }
+.b3 { background: radial-gradient(circle at 30% 30%, #b4ff8e, #2ecc71); }
+.b4 { background: radial-gradient(circle at 30% 30%, #ffe082, #ffa000); }
+.b5 { background: radial-gradient(circle at 30% 30%, #d0a6ff, #7e33d6); }
+
+.small { transform: scale(0.8); }
+.big { transform: scale(1.25); }
+
+/* ======= DARK CHRISTMAS GRADIENT TEXT ======= */
+.banner-text span {
+  font-size: 48px;
+  font-weight: bold;
+  font-family: Arial;
+  display: inline-block;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #c62828, #ffb300, #2e7d32);
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: transform 0.2s ease;
+}
+
+.banner-wrapper {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+</style>
+
+<!-- TEXT WITHOUT EMOJI -->
+<div class="banner-wrapper">
+  <div id="banner" class="banner-text"></div>
+</div>
+
+<!-- BALLOONS -->
+<div class="balloon-container">
+  <div class="balloon b1 small" style="left:10%; animation-delay:0s;"></div>
+  <div class="balloon b2 big" style="left:25%; animation-delay:1.2s;"></div>
+  <div class="balloon b3" style="left:40%; animation-delay:0.7s;"></div>
+  <div class="balloon b4 small" style="left:60%; animation-delay:2.1s;"></div>
+  <div class="balloon b5 big" style="left:80%; animation-delay:1.5s;"></div>
+  <div class="balloon b1" style="left:15%; animation-delay:3s;"></div>
+  <div class="balloon b3 big" style="left:55%; animation-delay:2.4s;"></div>
+  <div class="balloon b4 small" style="left:70%; animation-delay:3.5s;"></div>
+</div>
+
+<script>
+/* CREATE TEXT WITH NO EMOJI */
+const message = "Merry Christmas & Happy New Year 2026";
+const banner = document.getElementById("banner");
+
+banner.innerHTML = message
+  .split("")
+  .map(ch => `<span>${ch}</span>`)
+  .join("");
+
+/* MOUSE WAVE ANIMATION */
+document.addEventListener("mousemove", (e) => {
+  document.querySelectorAll("#banner span").forEach((letter, index) => {
+    const wave = Math.sin((e.clientX / 80) + (index / 2)) * 12;
+    letter.style.transform = `translateY(${wave}px)`;
+  });
+});
+</script>
