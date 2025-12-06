@@ -1,130 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Festive Animation</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
-    #animationArea {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 999999;
-    }
-    .balloon {
-      position: absolute;
-      bottom: -150px;
-      border-radius: 50% 50% 45% 45%;
-      opacity: 0.9;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15), inset -8px -8px rgba(255,255,255,0.1);
-      background: var(--color);
-      animation: floatUp linear infinite;
-    }
-    .star {
-      position: absolute;
-      bottom: -120px;
-      color: var(--star-color);
-      width: 0;
-      height: 0;
-      animation: floatUp linear infinite, rotateStar linear infinite, shimmer 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 12px var(--star-color));
-      transform-origin: center;
-    }
-    .star::before, .star::after {
-      content: "";
-      position: absolute;
-      top: -30px;
-      left: -20px;
-      border-right: 20px solid transparent;
-      border-left: 20px solid transparent;
-      border-bottom: 14px solid currentColor;
-    }
-    .star::after {
-      transform: rotate(-70deg);
-    }
-    .star::before {
-      transform: rotate(70deg);
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(0) }
-      100% { transform: translateY(-120vh) }
-    }
-    @keyframes rotateStar {
-      from { transform: rotate(0deg) scale(1); }
-      to { transform: rotate(360deg) scale(1.1); }
-    }
-    @keyframes shimmer {
-      0%   { opacity: 1; }
-      50%  { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    /* Greeting header */
-    #greeting {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 0, 102, 0.85);
-      color: white;
-      padding: 12px 28px;
-      border-radius: 40px;
-      font-size: 24px;
-      font-weight: bold;
-      z-index: 1000000;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Festive Animation — Balloons & Stars</title>
+
+<style>
+  /* Make background transparent so iframe overlays page */
+  html,body{
+    height:100%;
+    margin:0;
+    padding:0;
+    background: transparent;
+    overflow: hidden;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  /* Full-screen animation area */
+  #animationArea{
+    position:fixed !important;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 999998;
+  }
+
+  /* Fixed greeting at top center */
+  #greeting {
+    position: fixed !important;
+    top: 18px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1000000 !important;
+    background: rgba(255, 0, 102, 0.92);
+    color: #fff;
+    padding: 10px 26px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 20px;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    pointer-events: none;
+  }
+
+  /* float wrapper moves vertically (no transform conflict for inner rotate) */
+  .float-wrap{
+    position: absolute;
+    bottom: -200px;
+    will-change: transform, opacity;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(0) }
+    100% { transform: translateY(-140vh) }
+  }
+
+  /* Balloon visuals */
+  .balloon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50% 50% 45% 45%;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12), inset -8px -8px rgba(255,255,255,0.06);
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.06));
+  }
+
+  /* Star visuals (5-point) */
+  .star {
+    width: 100%;
+    height: 100%;
+    display:block;
+    transform-origin: 50% 50%;
+    animation: rotateStar linear infinite;
+    filter: drop-shadow(0 0 12px rgba(255,255,255,0.18));
+  }
+
+  /* perfect 5-point star using clip-path */
+  .star-inner {
+    width:100%; height:100%;
+    background: currentColor;
+    clip-path: polygon(
+      50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+      50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+    );
+  }
+
+  @keyframes rotateStar {
+    from { transform: rotate(0deg) }
+    to   { transform: rotate(360deg) }
+  }
+
+  /* sizes helpers */
+  .size-s{ transform: scale(0.7); }
+  .size-m{ transform: scale(1); }
+  .size-l{ transform: scale(1.4); }
+
+</style>
 </head>
 <body>
 
-  <div id="animationArea"></div>
-  <div id="greeting">Merry Christmas & Happy New Year 2026</div>
+<div id="animationArea" aria-hidden="true"></div>
+<div id="greeting">Merry Christmas &amp; Happy New Year 2026</div>
 
 <script>
-  function random(min, max) {
-    return Math.random() * (max - min) + min;
+(function(){
+  const AREA = document.getElementById('animationArea');
+
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  const balloonColors = ['#ff3366','#ff9100','#ffd700','#00cc66','#2979ff','#d500f9'];
+  const starColors = ['#ffeb3b','#ff5722','#4caf50','#00eaff','#ff33cc'];
+
+  // create one floating item (balloon or star)
+  function createItem(kind){
+    const wrap = document.createElement('div');
+    wrap.className = 'float-wrap';
+    const vw = rand(4,96);
+    wrap.style.left = vw + 'vw';
+
+    const dur = rand(8,16);
+    const delay = rand(0,3);
+    wrap.style.animationDuration = dur + 's';
+    wrap.style.animationDelay = delay + 's';
+    // slight horizontal drift using translateX via CSS variable (applied per-wrap)
+    const drift = rand(-40,40); // px
+    wrap.style.setProperty('--drift', drift + 'px');
+    wrap.style.willChange = 'transform, opacity';
+
+    if(kind === 'balloon'){
+      const size = Math.round(rand(40,110));
+      wrap.style.width = size + 'px';
+      wrap.style.height = Math.round(size*1.25) + 'px';
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.style.background = `linear-gradient(180deg, ${pick(balloonColors)}, ${shadeColor(pick(balloonColors), -12)})`;
+      b.style.borderRadius = '50% 50% 45% 45%';
+      wrap.appendChild(b);
+    } else {
+      const size = Math.round(rand(18,56));
+      wrap.style.width = size + 'px';
+      wrap.style.height = size + 'px';
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.color = pick(starColors);
+      s.style.animationDuration = (rand(6,14)) + 's';
+      // random rotation direction
+      if(Math.random()>0.5) s.style.animationDirection = 'reverse';
+      const inner = document.createElement('div');
+      inner.className = 'star-inner';
+      s.appendChild(inner);
+      wrap.appendChild(s);
+    }
+
+    AREA.appendChild(wrap);
+    // cleanup after animation duration + delay + small buffer
+    setTimeout(()=>{ wrap.remove(); }, (dur + delay + 1) * 1000);
   }
 
-  function createBalloon() {
-    const b = document.createElement('div');
-    b.className = 'balloon';
-    const size = random(40, 90);
-    b.style.width = size + 'px';
-    b.style.height = (size * 1.25) + 'px';
-    b.style.setProperty('--color', ['#ff3366','#ff9100','#ffcc00','#00e676','#2979ff','#d500f9'][Math.floor(Math.random()*6)]);
-    b.style.left = random(5, 95) + 'vw';
-    b.style.animationDuration = random(8, 15) + 's';
-    document.getElementById('animationArea').appendChild(b);
-    setTimeout(() => b.remove(), 20000);
+  // helper to slightly change color (simple hex shade)
+  function shadeColor(hex, percent) {
+    // hex format #rrggbb
+    try{
+      const h = hex.replace('#','');
+      const r = parseInt(h.substring(0,2),16);
+      const g = parseInt(h.substring(2,4),16);
+      const b = parseInt(h.substring(4,6),16);
+      const t = percent<0?0:255;
+      const p = Math.abs(percent)/100;
+      const R = Math.round((t - r)*p) + r;
+      const G = Math.round((t - g)*p) + g;
+      const B = Math.round((t - b)*p) + b;
+      return '#'+((1<<24)+(R<<16)+(G<<8)+B).toString(16).slice(1);
+    }catch(e){
+      return hex;
+    }
   }
 
-  function createStar() {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const scale = random(0.6, 1.4);
-    s.style.width = (20 * scale) + 'px';
-    s.style.height = (20 * scale) + 'px';
-    s.style.setProperty('--star-color', ['#ffeb3b','#ff5722','#4caf50','#00eaff','#ff33cc'][Math.floor(Math.random()*5)]);
-    s.style.left = random(5, 95) + 'vw';
-    s.style.animationDuration = random(9, 18) + 's';
-    document.getElementById('animationArea').appendChild(s);
-    setTimeout(() => s.remove(), 25000);
-  }
+  // spawn schedule
+  const spawnBalloon = setInterval(()=> createItem('balloon'), 700);
+  const spawnStar = setInterval(()=> createItem('star'), 1100);
 
-  setInterval(createBalloon, 700);
-  setInterval(createStar, 1100);
+  // expose a simple stop method (optional)
+  window._festiveStop = () => {
+    clearInterval(spawnBalloon);
+    clearInterval(spawnStar);
+  };
+
+})();
 </script>
 
 </body>
