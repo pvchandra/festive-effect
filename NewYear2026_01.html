@@ -1,103 +1,131 @@
-<style>
-/* ======= BALLOON CONTAINER ======= */
-.balloon-container {
-  position: relative;
-  width: 100%;
-  height: 550px;
-  overflow: hidden;
-  margin-top: 40px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Festive Animation</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    #animationArea {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999999;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      border-radius: 50% 50% 45% 45%;
+      opacity: 0.9;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15), inset -8px -8px rgba(255,255,255,0.1);
+      background: var(--color);
+      animation: floatUp linear infinite;
+    }
+    .star {
+      position: absolute;
+      bottom: -120px;
+      color: var(--star-color);
+      width: 0;
+      height: 0;
+      animation: floatUp linear infinite, rotateStar linear infinite, shimmer 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px var(--star-color));
+      transform-origin: center;
+    }
+    .star::before, .star::after {
+      content: "";
+      position: absolute;
+      top: -30px;
+      left: -20px;
+      border-right: 20px solid transparent;
+      border-left: 20px solid transparent;
+      border-bottom: 14px solid currentColor;
+    }
+    .star::after {
+      transform: rotate(-70deg);
+    }
+    .star::before {
+      transform: rotate(70deg);
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) }
+      100% { transform: translateY(-120vh) }
+    }
+    @keyframes rotateStar {
+      from { transform: rotate(0deg) scale(1); }
+      to { transform: rotate(360deg) scale(1.1); }
+    }
+    @keyframes shimmer {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    /* Greeting header */
+    #greeting {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 0, 102, 0.85);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 1000000;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
 
-/* ======= BALLOON SHAPES ======= */
-.balloon {
-  position: absolute;
-  bottom: -180px;
-  width: 70px;
-  height: 95px;
-  border-radius: 50% 50% 45% 45%;
-  animation: floatUp 10s linear infinite;
-  opacity: 0.95;
-}
-
-.balloon::before {
-  content: "";
-  position: absolute;
-  top: 12px;
-  left: 18px;
-  width: 18px;
-  height: 28px;
-  background: rgba(255, 255, 255, 0.75);
-  border-radius: 50%;
-  filter: blur(2px);
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) translateX(0); }
-  100% { transform: translateY(-900px) translateX(20px); }
-}
-
-/* Balloon colors */
-.b1 { background: radial-gradient(circle at 30% 30%, #ff8ab9, #ff006a); }
-.b2 { background: radial-gradient(circle at 30% 30%, #7efcff, #00a6d6); }
-.b3 { background: radial-gradient(circle at 30% 30%, #b4ff8e, #2ecc71); }
-.b4 { background: radial-gradient(circle at 30% 30%, #ffe082, #ffa000); }
-.b5 { background: radial-gradient(circle at 30% 30%, #d0a6ff, #7e33d6); }
-
-.small { transform: scale(0.8); }
-.big { transform: scale(1.25); }
-
-/* ======= DARK CHRISTMAS GRADIENT TEXT ======= */
-.banner-text span {
-  font-size: 48px;
-  font-weight: bold;
-  font-family: Arial;
-  display: inline-block;
-  letter-spacing: 1px;
-  background: linear-gradient(90deg, #c62828, #ffb300, #2e7d32);
-  -webkit-background-clip: text;
-  color: transparent;
-  transition: transform 0.2s ease;
-}
-
-.banner-wrapper {
-  width: 100%;
-  text-align: center;
-  margin-top: 20px;
-}
-</style>
-
-<!-- TEXT WITHOUT EMOJI -->
-<div class="banner-wrapper">
-  <div id="banner" class="banner-text"></div>
-</div>
-
-<!-- BALLOONS -->
-<div class="balloon-container">
-  <div class="balloon b1 small" style="left:10%; animation-delay:0s;"></div>
-  <div class="balloon b2 big" style="left:25%; animation-delay:1.2s;"></div>
-  <div class="balloon b3" style="left:40%; animation-delay:0.7s;"></div>
-  <div class="balloon b4 small" style="left:60%; animation-delay:2.1s;"></div>
-  <div class="balloon b5 big" style="left:80%; animation-delay:1.5s;"></div>
-  <div class="balloon b1" style="left:15%; animation-delay:3s;"></div>
-  <div class="balloon b3 big" style="left:55%; animation-delay:2.4s;"></div>
-  <div class="balloon b4 small" style="left:70%; animation-delay:3.5s;"></div>
-</div>
+  <div id="animationArea"></div>
+  <div id="greeting">Merry Christmas & Happy New Year 2026</div>
 
 <script>
-/* CREATE TEXT WITH NO EMOJI */
-const message = "Merry Christmas & Happy New Year 2026";
-const banner = document.getElementById("banner");
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-banner.innerHTML = message
-  .split("")
-  .map(ch => `<span>${ch}</span>`)
-  .join("");
+  function createBalloon() {
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    const size = random(40, 90);
+    b.style.width = size + 'px';
+    b.style.height = (size * 1.25) + 'px';
+    b.style.setProperty('--color', ['#ff3366','#ff9100','#ffcc00','#00e676','#2979ff','#d500f9'][Math.floor(Math.random()*6)]);
+    b.style.left = random(5, 95) + 'vw';
+    b.style.animationDuration = random(8, 15) + 's';
+    document.getElementById('animationArea').appendChild(b);
+    setTimeout(() => b.remove(), 20000);
+  }
 
-/* MOUSE WAVE ANIMATION */
-document.addEventListener("mousemove", (e) => {
-  document.querySelectorAll("#banner span").forEach((letter, index) => {
-    const wave = Math.sin((e.clientX / 80) + (index / 2)) * 12;
-    letter.style.transform = `translateY(${wave}px)`;
-  });
-});
+  function createStar() {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const scale = random(0.6, 1.4);
+    s.style.width = (20 * scale) + 'px';
+    s.style.height = (20 * scale) + 'px';
+    s.style.setProperty('--star-color', ['#ffeb3b','#ff5722','#4caf50','#00eaff','#ff33cc'][Math.floor(Math.random()*5)]);
+    s.style.left = random(5, 95) + 'vw';
+    s.style.animationDuration = random(9, 18) + 's';
+    document.getElementById('animationArea').appendChild(s);
+    setTimeout(() => s.remove(), 25000);
+  }
+
+  setInterval(createBalloon, 700);
+  setInterval(createStar, 1100);
 </script>
+
+</body>
+</html>
